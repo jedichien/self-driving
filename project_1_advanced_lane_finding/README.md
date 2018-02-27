@@ -16,4 +16,4 @@ Final view
 ### Warning
 I notice that sometimes will face with np.inf while getting meter from fitted curvature of lane.
 
-[ndrplz]: (https://github.com/ndrplz/self-driving-car/tree/master/project_4_advanced_lane_finding)
+[ndrplz]: <https://github.com/ndrplz/self-driving-car/tree/master/project_4_advanced_lane_finding>
