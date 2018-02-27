@@ -1,7 +1,7 @@
 # Advanced Lane Finding
 Thank [ndrplz] from great tutorial, then I reconstruct it into more easier comprehension. This tutorial only use simple Computer Vision theory to process, however it can be optimised in more Intelligent (s.t. CNN).
 
-<p aling='center'>
+<p align='center'>
 <img src='./output/result.gif' width='50%' height='50%'/><br/>
 Final view
 </p>
