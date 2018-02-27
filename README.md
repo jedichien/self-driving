@@ -15,7 +15,7 @@ This project is [Udacity Self-Driving Car Engineer Nanodegree](https://www.udaci
 - [ ] Road Segmentation
 
 ### Completed
-<p align='center'>
+<p>
 <img src='./project_1_advanced_lane_finding/output/result.gif' width='25%' height='25%' /><br/>
 Advanced Lane Finding
 </p>
