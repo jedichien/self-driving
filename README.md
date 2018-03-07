@@ -3,7 +3,7 @@ This project is [Udacity Self-Driving Car Engineer Nanodegree](https://www.udaci
 
 ## TODO
 - [x] Advanced Lane Finding
-- [ ] Traffic Sign Classification
+- [x] Traffic Sign Classification
 - [ ] Behavioral Cloning
 - [ ] Vehicle Detection
 - [ ] Extended Kalman Filter
@@ -18,6 +18,10 @@ This project is [Udacity Self-Driving Car Engineer Nanodegree](https://www.udaci
 <p>
 <img src='./project_1_advanced_lane_finding/output/result.gif' width='25%' height='25%' /><br/>
 Advanced Lane Finding
+</p><br/>
+<p>
+<img src='./project_2_traffic_sign_classification/output/result.jpg' width='25%' height='25%' /><br/>
+Traffic Sign Classification
 </p>
 
 
