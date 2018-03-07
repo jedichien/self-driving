@@ -2,8 +2,7 @@
 This notebook will teach you how to use CNN(Convolutional Neural Network) to let computer distinguish category of traffic sign. My structure of CNN composed of 4 convolutional layers including Dropout layer with probability of 0.5 and 2 fully connected layers, this model is based on empirically. And the activations whence I apply are `RELU` in each of convolutional layers, `TANH` in 2 elapsed fully connected layer, and `SOFTMAX` in the output layer.       
 
 ## Dataset
-Two options can be used to obtain dataset, by [script](dowload_dataset.sh) and by link: [train](http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip), [test](http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_Images.zip)
-For conviniently executing notebook, I recommend you directly to execute the script, `dowload_dataset.sh`.
+Two options can be used to obtain dataset, by [script](dowload_dataset.sh) and by link: [train](http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip), [test](http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_Images.zip). For conviniently executing notebook, I recommend you directly to execute the script, `dowload_dataset.sh`.
 
 ## Result
 <p align='center'>
