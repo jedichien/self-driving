@@ -6,11 +6,11 @@ Two options can be used to obtain dataset, by [script](dowload_dataset.sh) and b
 
 ## Result
 <p align='center'>
-<img src='output/result.jpg' width='25%' height='25%' /><br/>
+<img src='output/result.jpg' width='40%' height='40%' /><br/>
 Predictive Results
 </p><br/>
 
 <p align='center'>
-<img src='output/hist.jpg' width='25%' height='25%' /><br/>
+<img src='output/hist.jpg' width='40%' height='40%' /><br/>
 Histogram of Softmax Probability of Predictions.
 </p>
