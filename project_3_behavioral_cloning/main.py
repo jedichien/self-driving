@@ -9,7 +9,7 @@ from process_data import load_dataset_df, pd2np, split_train_test, generate_batc
 
 from config import config
 
-def train_process(train, test, epochs=1, steps_per_epoch=100, validation_steps=100, lr=1e-2):
+def train_process(train, test, epochs=1, steps_per_epoch=100, validation_steps=100, lr=1e-3):
     optimizer = Adam(lr=lr)
     model = E2EModel()
     model.compile(loss='mse', optimizer=optimizer)
