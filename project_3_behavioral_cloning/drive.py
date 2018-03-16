@@ -41,13 +41,10 @@ def telemetry(sid, data):
     speed = data["speed"]
     # The current image from the center camera of the car
     imgString = data["image"]
-    image = Image.open(BytesIO(base64.b64decode(imgString)))
-
-    # frames incoming from the simulator are in RGB format
-    image_array = cv2.cvtColor(np.asarray(image), code=cv2.COLOR_RGB2BGR)
+    image_array = Image.open(BytesIO(base64.b64decode(imgString)))
 
     # perform preprocessing (crop, resize etc.)
-    image_array = preprocessing_data(image_array)
+    image_array = preprocessing_data(image_array, False)
 
     # add singleton batch dimension
     image_array = np.expand_dims(image_array, axis=0)
@@ -76,7 +73,6 @@ def send_control(steering_angle, throttle):
 
 if __name__ == '__main__':
     # load model weights
-    # weights_path = os.path.join('checkpoints', os.listdir('checkpoints')[-1])
     weights_path = 'weights/w.17-0.08334.hd5'
     print('Loading weights: {}'.format(weights_path))
     model.load_weights(weights_path)
@@ -88,4 +84,4 @@ if __name__ == '__main__':
     app = socketio.Middleware(sio, app)
 
     # deploy as an eventlet WSGI server
-    eventlet.wsgi.server(eventlet.listen(('10.240.0.2', 4567)), app)
+    eventlet.wsgi.server(eventlet.listen(('', 4567)), app)

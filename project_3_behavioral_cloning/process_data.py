@@ -78,14 +78,16 @@ def split_train_test(data, ratio=0.8):
 Data preprocessing including cropped and resized.
 
 Args:
-  imgp: path of image
+  img: path of image or image array only if train is True
+  train: default is False.
   verbose: verbose if True
   save: saving image if True
 Return:
   processed data
 """
-def preprocessing_data(imgp, verbose=False, save=True):
-    img = mpimg.imread(imgp)
+def preprocessing_data(img, train=False, verbose=False, save=True):
+    if train:
+        img = mpimg.imread(img)
     cropped = img[config['crop_height'], :, :]
     resized = cv2.resize(cropped, dsize=(w, h))
     # if input_channel equals to 1, changed color space from RGB to YUV
