@@ -42,10 +42,9 @@ def telemetry(sid, data):
     # The current image from the center camera of the car
     imgString = data["image"]
     image_array = Image.open(BytesIO(base64.b64decode(imgString)))
-
     # perform preprocessing (crop, resize etc.)
+    image_array = np.asarray(image_array)
     image_array = preprocessing_data(image_array, False)
-
     # add singleton batch dimension
     image_array = np.expand_dims(image_array, axis=0)
 
@@ -73,7 +72,7 @@ def send_control(steering_angle, throttle):
 
 if __name__ == '__main__':
     # load model weights
-    weights_path = 'weights/w.17-0.08334.hd5'
+    weights_path = 'weights/w.11-0.29734.hd5'
     print('Loading weights: {}'.format(weights_path))
     model.load_weights(weights_path)
 
