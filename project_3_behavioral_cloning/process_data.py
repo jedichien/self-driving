@@ -52,10 +52,19 @@ Pandas dataframe to numpy.matrix so called numpy.array.
 Args:
   ddf: pandas dataframe
 Return:
-  numpy.matrix 
+  numpy.array
 """
 def pd2np(ddf):
-    return ddf.as_matrix()
+    data = []
+    for id, df in ddf.iterrows():
+        data.append([df['front'], 
+                    df['left'], 
+                    df['right'],
+                    np.float32(df['steer']),
+                    df['throttle'],
+                    df['brake'],
+                    df['speed']])
+    return np.array(data, dtype=np.object)
 
 """
 Split dataset into training and testing according to specific ratio rate.
@@ -123,7 +132,7 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
     while True:
         shuffle(data)
         n_current = 0
-        X = np.zeros(shape=(batch_size, h, w, c), dtype=np.uint8)
+        X = np.zeros(shape=(batch_size, h, w, c), dtype=np.float32)
         y_steer = np.zeros(shape=(batch_size,), dtype=np.float32)
         
         for d in data:

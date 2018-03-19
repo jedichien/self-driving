@@ -30,11 +30,11 @@ def E2EModel(verbose=True):
     _ = Flatten()(_)
     _ = Dense(100)(_)
     _ = ELU()(_)
-    _ = Dropout(0.5)(_)
+    #_ = Dropout(0.5)(_)
     
     _ = Dense(50)(_)
     _ = ELU()(_)
-    _ = Dropout(0.5)(_)
+    #_ = Dropout(0.5)(_)
     
     _ = Dense(10)(_)
     _ = ELU()(_)
