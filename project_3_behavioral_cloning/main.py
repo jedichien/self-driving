@@ -36,5 +36,5 @@ if __name__ == '__main__':
     train, test = split_train_test(data)
     print("Train: {}\nTest: {}".format(train.shape[0], test.shape[0]))
     print("Start to training")
-    train_process(train, test, epochs=500, steps_per_epoch=30*config['batch_size'], validation_steps=10*config['batch_size'])
+    train_process(train, test, epochs=500, steps_per_epoch=30*config['batch_size'], validation_steps=config['batch_size'])
     
