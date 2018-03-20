@@ -5,7 +5,7 @@ from keras.optimizers import Adam
 import os
 
 from model import E2EModel
-from process_data import load_dataset_df, pd2np, split_train_test, generate_batch
+from process_data import load_dataset_df, pd2np, split_train_test, generate_batch, moderate_dataset
 
 from config import config
 
@@ -30,11 +30,13 @@ if __name__ == '__main__':
     dpath = os.path.join('data')
     print("Loading dataset: {}".format(dpath))
     ddf = load_dataset_df(dpath)
+    print("Moderate dataset")
+    ddf = moderate_dataset(ddf)
     print("DataFrame to numpy array")
     data = pd2np(ddf)
     print("Dataset splitted")
     train, test = split_train_test(data)
     print("Train: {}\nTest: {}".format(train.shape[0], test.shape[0]))
     print("Start to training")
-    train_process(train, test, epochs=500, steps_per_epoch=30*config['batch_size'], validation_steps=10*config['batch_size'])
+    train_process(train, test, epochs=500, steps_per_epoch=5*config['batch_size'], validation_steps=config['batch_size'])
     

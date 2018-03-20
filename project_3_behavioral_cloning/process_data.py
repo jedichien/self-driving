@@ -32,8 +32,9 @@ Data a histogram of sample of steering angles.
 Args:
   ddf: pandas dataframe
   save: saving image if True
+  filename: saving filename
 """
-def draw_histogram_of_steering_angle(ddf, save=True):
+def draw_histogram_of_steering_angle(ddf, save=True, filename='steering_angle.jpg'):
     f, ax = plt.subplots(1, 1)
     ax.set_title('Steering Angle Distribution in Fronted Camera')
     fhist = ax.hist(ddf['steer'].values, 100, density=False, facecolor='green', alpha=0.7, width=0.03)
@@ -43,8 +44,31 @@ def draw_histogram_of_steering_angle(ddf, save=True):
     if save:
         if not os.path.exists('output'):
             os.makedirs('output')
-        plt.savefig(os.path.join('output', 'steering_angle.jpg'))
+        plt.savefig(os.path.join('output', filename))
     plt.show()
+
+"""
+In order to preventing the effection by most frequency, zero steering. 
+I reduce it to size of second frequency.
+
+Args:
+  ddf: pandas dataframe
+Return:
+  pandas dataframe
+"""
+def moderate_dataset(ddf):
+    count, divs = np.histogram(ddf['steer'], bins=100)
+    idx = count.argsort()[::-1][:2]
+
+    f_c = count[idx[0]]
+    s_c = count[idx[1]]
+    f_v = divs[idx[0]]
+
+    drop_idx = ddf['steer'] == f_v
+    drop_idx = ddf['steer'][drop_idx].index
+    drop_idx = random.sample(drop_idx, f_c - s_c)
+    ddf = ddf.drop(drop_idx)
+    return ddf    
     
 """
 Pandas dataframe to numpy.matrix so called numpy.array.
