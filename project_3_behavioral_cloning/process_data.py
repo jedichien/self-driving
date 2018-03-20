@@ -195,6 +195,7 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
                 y_steer[n_current] = steer
                 n_current += 1
             if n_current == batch_size:     
-                yield X, y_steer
+                break
+        yield X, y_steer
         
         
