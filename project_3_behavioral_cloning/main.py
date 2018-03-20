@@ -18,11 +18,12 @@ def train_process(train, test, epochs=1, steps_per_epoch=100, validation_steps=1
         os.makedirs('weights')
     checkpoint_callback = ModelCheckpoint(os.path.join('weights', 'w.{epoch:02d}-{val_loss:.5f}.hd5'))
     logger = CSVLogger(filename='history.csv')
-
-    model.fit_generator(generator=generate_batch(train, batch_size=config['batch_size'], bias=config['bias']),
+    g_train = generate_batch(train, batch_size=config['batch_size'], bias=config['bias'])
+    g_test = generate_batch(test, batch_size=config['batch_size'], bias=1.0)
+    model.fit_generator(generator=g_train,
                         steps_per_epoch=steps_per_epoch, 
                         epochs=epochs,
-                        validation_data=generate_batch(test, batch_size=config['batch_size'], bias=1.0),
+                        validation_data=g_test,
                         validation_steps=validation_steps,
                         callbacks=[checkpoint_callback, logger])
     

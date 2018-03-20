@@ -160,8 +160,6 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
         y_steer = np.zeros(shape=(batch_size,), dtype=np.float32)
         
         for d in data:
-            if n_current == batch_size:
-                break
             # choose frame randomly among (front, left, right)
             cameraid = random.randint(0, 2)
             frame = preprocessing_data(d[cameraid], train=True)
@@ -196,7 +194,7 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
                 X[n_current] = frame
                 y_steer[n_current] = steer
                 n_current += 1
-                
-        yield X, y_steer
+            if n_current == batch_size:     
+                yield X, y_steer
         
         
