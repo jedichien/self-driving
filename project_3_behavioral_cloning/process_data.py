@@ -164,7 +164,7 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
                 break
             # choose frame randomly among (front, left, right)
             cameraid = random.randint(0, 2)
-            frame = preprocessing_data(d[cameraid])
+            frame = preprocessing_data(d[cameraid], train=True)
             if cameraid == 0:
                 steer = d[3]
             elif cameraid == 1:
