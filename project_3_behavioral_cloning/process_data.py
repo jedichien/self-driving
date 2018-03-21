@@ -26,7 +26,7 @@ def load_dataset_df(dpath):
     return csv_df
 
 """
-Data a histogram of sample of steering angles.
+data histogram from sample of steering angles.
 
 Args:
   ddf: pandas dataframe
@@ -47,8 +47,8 @@ def draw_histogram_of_steering_angle(ddf, save=True, filename='steering_angle.jp
     plt.show()
 
 """
-In order to preventing the effection by most frequency, zero steering. 
-I reduce it to size of second frequency.
+In order to preventing the effection by most frequency, zero steering
+, I decrease it to secondly most frequency size.
 
 Args:
   ddf: pandas dataframe
@@ -70,7 +70,7 @@ def moderate_dataset(ddf):
     return ddf    
     
 """
-Pandas dataframe to numpy.matrix so called numpy.array.
+Transform Pandas dataframe to numpy.matrix so called numpy.array.
 
 Args:
   ddf: pandas dataframe
@@ -96,7 +96,7 @@ def pd2np(ddf):
     return imgs, labels
 
 """
-Split dataset into training and testing according to specific ratio rate.
+Split dataset into training and testing set according to specific ratio rate.
 
 Args:
   data: dataset
@@ -147,7 +147,7 @@ def preprocessing_data(img, train=False, verbose=False, save=True):
     return resized.astype(np.float32)
 
 """
-Need data augmented or not
+Need to augment data or not
 
 Args:
   enable: use normal dist as threshold for condition to choose it;
@@ -176,7 +176,7 @@ def augmentShift(frame, cam_shift):
 
     return _frame
 """
-Rotating frame
+Rotate frame
 
 Args:
   frame: input frame
