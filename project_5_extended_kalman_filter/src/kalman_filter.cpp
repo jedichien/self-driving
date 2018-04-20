@@ -49,55 +49,44 @@ void KalmanFilter::Predict() {
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
-  /**
-   * update the state by using Kalman Filter equations
-   */
-  MatrixXd H_T = H_.transpose();
-  MatrixXd K = P_ * H_T * (H_*P_*H_T+R_).inverse();
-  VectorXd z_predict = H_*x_;
-  // update x
-  x_ = x_ + K * (z-z_predict);
-  MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
-  // update covariance
-  P_ = (I-K*H_) * P_;
+  VectorXd y = z - H_*x_;
+  KF(y);
 }
 
+// EKF
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
    * update the state by using Extended Kalman Filter equations
    */
-  float px = x_(0);
-  float py = x_(1);
-  float vx = x_(2);
-  float vy = x_(3);
-  /**
-   * the following part is getting measure prediction.
-   * but I wonder why this method be applied to.
-   */
-  // lane
+  float px = x_(0); // x coordinates
+  float py = x_(1); // y coordinates
+  float vx = x_(2); // velocity of x-axis
+  float vy = x_(3); // velocity of y-axis
+  
+  // distance
   double rho = sqrt(px*px + py*py);
+  
   // angle
   double phi = atan2(py, px);
+
+  // velocity vector
   // px dot with vx, and prevent from infinity occuring
+  // calculate vector according to measuring velocity.
   double rho_dot = (px*vx + py*vy) / std::max(rho, 0.0001);
 
-  VectorXd z_predict(3);
-  // [lane, angle, dot_value]
-  z_predict << rho, phi, rho_dot;
+  VectorXd h(3);
+  // distance, angle, velocity vector
+  h << rho, phi, rho_dot;
 
-  VectorXd y = z - z_predict;
-  // normalize angle, let them within -M_PI to M_PI
-  while (y(1) > M_PI) {
-    y(1) -= 2 * M_PI;
-  }
-  while (y(1) < -M_PI) {
-    y(1) += 2 * M_PI;
-  }
-  // update
+  VectorXd y = z - h;
+  KF(y);  
+}
+
+void KalmanFilter::KF(const VectorXd &y) {
+  // update state by state by using KF
   MatrixXd H_T = H_.transpose();
   MatrixXd K = P_ * H_T * (H_*P_*H_T + R_).inverse();
   x_ = x_ + K * y;
   MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
   P_ = (I-K*H_) * P_;
-
 }

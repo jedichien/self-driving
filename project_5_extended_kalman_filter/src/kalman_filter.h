@@ -64,6 +64,11 @@ public:
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
+  /**
+   * Kalman Filter equation.
+   * @param y The residual for measurement and prediction
+   */
+  void KF(const Eigen::VectorXd &y);
 };
 
 #endif /* KALMAN_FILTER_H_ */
