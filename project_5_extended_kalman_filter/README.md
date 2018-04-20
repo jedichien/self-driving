@@ -87,10 +87,14 @@ Kalman Filter is a accurating matrix which will be changed period, and Extended 
 Kalman Filter equation
 </p>
 
+<hr style='width:50%;'/>
+
 <p align='center'>
 <img src='./output_img/equation_ekf.png' /><br/>
 Extended Kalman Filter equation
 </p>
+
+<hr style='width:50%;'/>
 
 <p align='center'>
 <img src='./output_img/matrix_measurement.png' /><br/>
