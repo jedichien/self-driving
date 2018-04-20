@@ -71,7 +71,7 @@ Matlab scripts that can generate additional data.
 
 
 ## Brief Introduction
-Kalman Filter aims to accurate noise. The sensor is not always perfect enough to get no error data, however how to get a better accuracy is the major problem.<br/>
+Kalman Filter aims to correct noise. The sensor is not always perfect enough to get no error data, however how to get a better accuracy is the major problem.<br/>
 
 To solve this problem, we can apply some of Filters to it, in this case we use Kalman Filter to solve.<br/>
 
@@ -79,7 +79,7 @@ Kalman Filter can handle the single distribution environment which means noise o
 For convenient to explain, we suppose the noises consist of normal distribution.<br/>
 
 When we collect data from sensor, Radar and Lidar, we make a estimation for the future, however, if our estimation is pretty bad, how should be improved.<br/>
-To improve our estimation, we have to apply a learning mechanism on it, Kalman Filter.<br/>
+To improve our estimation, we have to apply a correcting mechanism on it, Kalman Filter.<br/>
 
 Kalman Filter is a accurating matrix which will be changed period, and Extended Kalman Filter(EKF) differ to Kalman Filter is that EKF consider dynamic distribution case.
 <p align='center'>
