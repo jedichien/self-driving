@@ -23,7 +23,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
         return rmse;
     }
     // same size check
-    if (estimations.size() !== ground_truth.size()) {
+    if (estimations.size() != ground_truth.size()) {
         std::cout << "Invalid estimations or ground_truth. Data should be the same dimension" << std::endl;
         return rmse;
     }
