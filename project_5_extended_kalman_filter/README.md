@@ -102,8 +102,8 @@ Matrix of H in EKF
 </p>
 
 ## Referrence
-1. blog: [Blogger]('https://medium.com/intro-to-artificial-intelligence/extended-kalman-filter-simplified-udacitys-self-driving-car-nanodegree-46d952fce7a3')
-2. code: [NikolasEnt]('https://github.com/NikolasEnt/Extended-Kalman-Filter')
-3. code: [ndrplz]('https://github.com/ndrplz/self-driving-car/tree/master/project_6_extended_kalman_filter')
+1. blog: [Blogger](https://medium.com/intro-to-artificial-intelligence/extended-kalman-filter-simplified-udacitys-self-driving-car-nanodegree-46d952fce7a3)
+2. code: [NikolasEnt](https://github.com/NikolasEnt/Extended-Kalman-Filter)
+3. code: [ndrplz](https://github.com/ndrplz/self-driving-car/tree/master/project_6_extended_kalman_filter)
 
 
