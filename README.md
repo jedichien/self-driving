@@ -6,7 +6,7 @@ This project is [Udacity Self-Driving Car Engineer Nanodegree](https://www.udaci
 - [x] Traffic Sign Classification
 - [x] Behavioral Cloning
 - [x] Vehicle Detection
-- [ ] Extended Kalman Filter
+- [x] Extended Kalman Filter
 - [ ] Unscented Kalman Filter
 - [ ] Kidnapped Vehicle
 - [ ] PID Controller
@@ -30,5 +30,9 @@ Behavioral Cloning
 <p>
 <img src='./project_4_vehicle_detection/ssd/output/result.gif' width='25%' height='25%' /><br/>
 Vehicle Detection
+</p>
+<p>
+<img src='./project_5_extended_kalman_filter/output_img/demo_dataset2.gif' width='25%' height='25%' /><br/>
+Extended Kalman Filter
 </p>
 
