@@ -72,7 +72,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   // velocity vector
   // px dot with vx, and prevent from infinity occuring
   // calculate vector according to measuring velocity.
-  double rho_dot = (px*vx + py*vy) / std::max(rho, 0.0001);
+  double rho_dot = (px*vx + py*vy) / std::max(rho, 0.000001);
 
   VectorXd h(3);
   // distance, angle, velocity vector
