@@ -59,10 +59,10 @@ public:
   VectorXd weights_;
 
   ///* State dimension
-  int n_x_;
+  unsigned int n_x_;
 
   ///* Augmented state dimension
-  int n_aug_;
+  unsigned int n_aug_;
 
   ///* Sigma point spreading parameter
   double lambda_;
