@@ -69,6 +69,10 @@ public:
 
   unsigned int n_sigma_points_;
 
+  double NIS_radar_;
+
+  double NIS_laser_;
+
   /**
    * Constructor
    */
@@ -109,7 +113,7 @@ public:
    */
   void UpdateRadar(MeasurementPackage meas_package);
 
-  void UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z);
+  void UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, unsigned int n_z);
 };
 
 #endif /* UKF_H */
