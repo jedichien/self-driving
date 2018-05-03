@@ -73,6 +73,8 @@ public:
 
   double NIS_laser_;
 
+  VectorXd weights_c_;
+
   /**
    * Constructor
    */
