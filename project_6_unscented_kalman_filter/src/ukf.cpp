@@ -70,9 +70,9 @@ UKF::UKF() {
   Xsig_pred_ = MatrixXd(n_x_, n_sigma_points_);
   
   // Sigma points spreading parameter
-  float alpha = 0.0001;
+  float alpha = 0.001;
   float kappa = 0.0;
-  lambda_ = pow(alpha, 1) * (n_aug_+kappa) - n_aug_;
+  lambda_ = pow(alpha, 2) * (n_aug_+kappa) - n_aug_;
   //lambda_ = 10 - n_aug_; // why? in the paper, which give above equation instead of this
   
   weights_ = VectorXd(n_sigma_points_);
@@ -80,7 +80,7 @@ UKF::UKF() {
   weights_.segment(1, 2*n_aug_).fill(0.5/(n_aug_+lambda_));
   
   weights_c_ = VectorXd(n_sigma_points_);
-  weights_c_(0) = lambda_ / (lambda_ + n_aug_) + (1-pow(alpha, 2)+2);
+  weights_c_(0) = (lambda_/(lambda_ + n_aug_)) + (1-pow(alpha, 2)+2);
   weights_c_.segment(1, 2*n_aug_).fill(0.5/(n_aug_+lambda_));
 
   cout << "weights_: \n" << weights_ << endl;
@@ -139,7 +139,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   cout << "===== start prediction ====" << endl; 
   
   double dt = (meas_package.timestamp_ - time_us_) / 1000000.0;
-  /*
+  /* 
   const double _ddt = 0.05;
   while (dt > 0.1) {
     Prediction(_ddt);
@@ -326,13 +326,11 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     double yaw = Xsig_pred_(3, i);
 
     // avoid zero
-    if (fabs(p_x) <= 0.0001) {
+    if (fabs(p_x) < 0.0001 && fabs(p_y) < 0.0001) {
       p_x = 0.0001;
-    }
-    if (fabs(p_y) <= 0.0001) {
       p_y = 0.0001;
     }
-
+    
     double v1 = cos(yaw) * v;
     double v2 = sin(yaw) * v;
     // measurement model, H matrix
