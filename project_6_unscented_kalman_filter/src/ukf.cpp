@@ -2,6 +2,8 @@
 #include "Eigen/Dense"
 #include <iostream>
 
+#define EPS 0.0001
+
 using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -221,7 +223,7 @@ void UKF::ComputeSigmaPoints(double dt) {
     
     // if yawd too big, we should correct the yaw rotation.
     // see: https://en.wikipedia.org/wiki/Directional_stability   
-    if (fabs(yawd) > 0.001) {
+    if (fabs(yawd) > EPS) {
       double v_grow = v / yawd;
       // problem is here I guess
       // this will influence the covariance of yawd too large
@@ -326,9 +328,9 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     double yaw = Xsig_pred_(3, i);
 
     // avoid zero
-    if (fabs(p_x) < 0.0001 && fabs(p_y) < 0.0001) {
-      p_x = 0.0001;
-      p_y = 0.0001;
+    if (fabs(p_x) < EPS && fabs(p_y) < EPS) {
+      p_x = EPS;
+      p_y = EPS;
     }
     
     double v1 = cos(yaw) * v;
@@ -374,10 +376,8 @@ void UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, unsigned int
     
     // Cross Covariance Matrix Tc
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
-    if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
-      while (x_diff(3) > M_PI) x_diff(3) -= 2.0 * M_PI;
-      while (x_diff(3) < -M_PI) x_diff(3) += 2.0 * M_PI;
-    } 
+    while (x_diff(3) > M_PI) x_diff(3) -= 2.0 * M_PI;
+    while (x_diff(3) < -M_PI) x_diff(3) += 2.0 * M_PI;
     Tc = Tc + weights_c_(i) * x_diff * z_diff.transpose();
   }
   
