@@ -67,7 +67,8 @@ int main() {
 // initialize priors assuming vehicle at landmark +/- 1.0 meters position stdev
 vector<float> init_priors(unsigned int map_size, vector<float> landmark_positions, float control_stdev) {
   vector<float> priors(map_size, 0.0);
-  // TODO: figure out why?
+  // initialize priors 
+  // Reference: https://en.wikipedia.org/wiki/Chebyshev%27s_inequality
   float normalization_term = landmark_positions.size() * (control_stdev * 2 + 1);
   for (unsigned int i = 0; i < landmark_positions.size(); i++) {
     int landmark_centre = landmark_positions[i];
