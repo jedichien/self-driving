@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include "normpdf.h"
+#include "norm.h"
 
 using namespace std;
 
