@@ -197,7 +197,7 @@ void ParticleFilter::resample() {
   }
   particles = resampledParticles;
   for(auto& particle : particles) {
-    particle.weigh = 1.0;
+    particle.weight = 1.0;
   }
 }
 
