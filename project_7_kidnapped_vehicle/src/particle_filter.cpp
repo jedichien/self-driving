@@ -189,13 +189,16 @@ void ParticleFilter::resample() {
   vector<Particle> resampledParticles;
   for(unsigned int i = 0; i < num_particles; i++) {
     beta += un_double_dist(gen) + 2 * beta;
-    while(beta > weights[i]) {
+    while(beta > weights[index]) {
       beta -= weights[index];
       index = (index + 1)%num_particles;
     }
     resampledParticles.push_back(particles[index]);
   }
   particles = resampledParticles;
+  for(auto& particle : particles) {
+    particle.weigh = 1.0;
+  }
 }
 
 Particle ParticleFilter::SetAssociations(Particle& particle, const std::vector<int>& associations, 
