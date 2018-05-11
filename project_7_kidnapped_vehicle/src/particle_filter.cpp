@@ -154,13 +154,15 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         double std_x = std_landmark[0];
         double std_y = std_landmark[1];
           
-        double mep_x = pow(p_x-o_x, 2) / (2*pow(std_x, 2));
-        double mep_y = pow(p_y-o_y, 2) / (2*pow(std_y, 2));
+        double mep_x = pow(o_x-p_x, 2) / (2*pow(std_x, 2));
+        double mep_y = pow(o_y-p_y, 2) / (2*pow(std_y, 2));
 
         double obs_w = (1.0/(2*M_PI*std_x*std_y)) * exp(-(mep_x + mep_y));
         particles[i].weight *= obs_w;
       }
     } // end particles
+
+    // normalization
     double norm_factor = 0.0;
     for(const auto& particle : particles) {
       norm_factor += particle.weight;
@@ -188,7 +190,7 @@ void ParticleFilter::resample() {
   double beta = 0.0;
   vector<Particle> resampledParticles;
   for(unsigned int i = 0; i < num_particles; i++) {
-    beta += un_double_dist(gen) + 2 * beta;
+    beta += 2*un_double_dist(gen);
     while(beta > weights[index]) {
       beta -= weights[index];
       index = (index + 1)%num_particles;
@@ -196,9 +198,6 @@ void ParticleFilter::resample() {
     resampledParticles.push_back(particles[index]);
   }
   particles = resampledParticles;
-  for(auto& particle : particles) {
-    particle.weight = 1.0;
-  }
 }
 
 Particle ParticleFilter::SetAssociations(Particle& particle, const std::vector<int>& associations, 
