@@ -3,6 +3,7 @@
  *
  *  Created on: Dec 12, 2016
  *      Author: Tiffany Huang
+ *      Modified by: James Chien
  */
 
 #include <random>
@@ -19,14 +20,14 @@
 
 using namespace std;
 
-#define EPS 1e-4
+#define EPS 1e-5
 #define NUM_PARTICLES 100
 
 void ParticleFilter::init(double x, double y, double theta, double std[]) {
-	// Set the number of particles. Initialize all particles to first position (based on estimates of 
-	//   x, y, theta and their uncertainties from GPS) and all weights to 1. 
-	// Add random Gaussian noise to each particle.
-	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
+  // Set the number of particles. Initialize all particles to first position (based on estimates of 
+  //   x, y, theta and their uncertainties from GPS) and all weights to 1. 
+  // Add random Gaussian noise to each particle.
+  // NOTE: Consult particle_filter.h for more information about this method (and others in this file).
   num_particles = NUM_PARTICLES;
   particles.resize(NUM_PARTICLES);
   // normal distributions
@@ -46,39 +47,45 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 
 // landmark prediction.
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
-	// Add measurements to each particle and add random Gaussian noise.
-	// NOTE: When adding noise you may find std::normal_distribution and std::default_random_engine useful.
-	//  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
-	//  http://www.cplusplus.com/reference/random/default_random_engine/
+  // Add measurements to each particle and add random Gaussian noise.
+  // NOTE: When adding noise you may find std::normal_distribution and std::default_random_engine useful.
+  //  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
+  //  http://www.cplusplus.com/reference/random/default_random_engine/
   std::default_random_engine gen;
-  std::normal_distribution<double> N_x(0, std_pos[0]);
-  std::normal_distribution<double> N_y(0, std_pos[1]);
-  std::normal_distribution<double> N_theta(0, std_pos[2]);
+  //std::normal_distribution<double> N_x(0, std_pos[0]);
+  //std::normal_distribution<double> N_y(0, std_pos[1]);
+  //std::normal_distribution<double> N_theta(0, std_pos[2]);
 
   for(auto& particle : particles) {
     double theta = particle.theta;
-
+    double x, y;
     if (fabs(yaw_rate) < EPS) {
-      particle.x += velocity * delta_t * cos(theta);
-      particle.y += velocity * delta_t * sin(theta);
+      x = particle.x + velocity * delta_t * cos(theta);
+      y = particle.y + velocity * delta_t * sin(theta);
     }
     else {
-      particle.x += velocity / yaw_rate * (sin(theta + yaw_rate*delta_t) - sin(theta));
-      particle.y += velocity / yaw_rate * (cos(theta) - cos(theta + yaw_rate*delta_t));
-      particle.theta += yaw_rate * delta_t;
+      x = particle.x + velocity / yaw_rate * (sin(theta + yaw_rate*delta_t) - sin(theta));
+      y = particle.y + velocity / yaw_rate * (cos(theta) - cos(theta + yaw_rate*delta_t));
+      theta = theta + yaw_rate * delta_t;
     }
     // noise
-    particle.x += N_x(gen);
-    particle.y += N_y(gen);
-    particle.theta += N_theta(gen);
+    //particle.x += N_x(gen);
+    //particle.y += N_y(gen);
+    //particle.theta += N_theta(gen);
+    std::normal_distribution<double> N_x(x, std_pos[0]);
+    std::normal_distribution<double> N_y(y, std_pos[1]);
+    std::normal_distribution<double> N_theta(theta, std_pos[2]);
+    particle.x = N_x(gen);
+    particle.y = N_y(gen);
+    particle.theta = N_theta(gen);
   }
 }
 
 void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) {
-	// Find the predicted measurement that is closest to each observed measurement and assign the 
-	//   observed measurement to this particular landmark.
-	// NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
-	//   implement this method and use it as a helper during the updateWeights phase.
+  // Find the predicted measurement that is closest to each observed measurement and assign the 
+  //   observed measurement to this particular landmark.
+  // NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
+  //   implement this method and use it as a helper during the updateWeights phase.
   for(auto& observation : observations) {
     double min_dist = numeric_limits<double>::max();
     for(const auto& prediction : predicted) {
@@ -118,10 +125,12 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       // Transform coordinates of observations from world onto map
       // The theory infer to Homogenous, here is usefull learning resource: https://www.youtube.com/watch?v=tAu8-gkxAcE
       vector<LandmarkObs> transform_observations;
+      transform_observations.resize(observations.size());
+      int c = 0;
       for(const auto& obs : observations) {
         double t_x = particle_x + cos(particle_theta) * obs.x - sin(particle_theta) * obs.y;
         double t_y = particle_y + sin(particle_theta) * obs.x + cos(particle_theta) * obs.y;
-        transform_observations.push_back(LandmarkObs{obs.id, t_x, t_y});
+        transform_observations[c++] = LandmarkObs{obs.id, t_x, t_y};
       }
 
       // step 3:
@@ -168,9 +177,9 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 }
 
 void ParticleFilter::resample() {
-	// Resample particles with replacement with probability proportional to their weight. 
-	// NOTE: You may find std::discrete_distribution helpful here.
-	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
+  // Resample particles with replacement with probability proportional to their weight. 
+  // NOTE: You may find std::discrete_distribution helpful here.
+  //   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
   // Basic theory
   /*
   vector<double> weights;
@@ -234,8 +243,8 @@ Particle ParticleFilter::SetAssociations(Particle& particle, const std::vector<i
 
 string ParticleFilter::getAssociations(Particle best)
 {
-	vector<int> v = best.associations;
-	stringstream ss;
+    vector<int> v = best.associations;
+    stringstream ss;
     copy( v.begin(), v.end(), ostream_iterator<int>(ss, " "));
     string s = ss.str();
     s = s.substr(0, s.length()-1);  // get rid of the trailing space
@@ -243,8 +252,8 @@ string ParticleFilter::getAssociations(Particle best)
 }
 string ParticleFilter::getSenseX(Particle best)
 {
-	vector<double> v = best.sense_x;
-	stringstream ss;
+    vector<double> v = best.sense_x;
+    stringstream ss;
     copy( v.begin(), v.end(), ostream_iterator<float>(ss, " "));
     string s = ss.str();
     s = s.substr(0, s.length()-1);  // get rid of the trailing space
@@ -252,8 +261,8 @@ string ParticleFilter::getSenseX(Particle best)
 }
 string ParticleFilter::getSenseY(Particle best)
 {
-	vector<double> v = best.sense_y;
-	stringstream ss;
+    vector<double> v = best.sense_y;
+    stringstream ss;
     copy( v.begin(), v.end(), ostream_iterator<float>(ss, " "));
     string s = ss.str();
     s = s.substr(0, s.length()-1);  // get rid of the trailing space
