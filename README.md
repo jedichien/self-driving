@@ -8,7 +8,7 @@ This project is [Udacity Self-Driving Car Engineer Nanodegree](https://www.udaci
 - [x] Vehicle Detection
 - [x] Extended Kalman Filter
 - [x] Unscented Kalman Filter
-- [ ] Kidnapped Vehicle
+- [x] Kidnapped Vehicle
 - [ ] PID Controller
 - [ ] MPC Controller
 - [ ] Path Planning
@@ -55,7 +55,15 @@ This project is [Udacity Self-Driving Car Engineer Nanodegree](https://www.udaci
         <img src='./project_6_unscented_kalman_filter/output_img/dataset_1.gif' width='90%' height='90%' />
       </p>
     </th>
+  </tr>
   <tr>
+    <th>
+      <p align='center'>
+        Kidnapped Vehicle<br/>
+        <img src='./project_7_kidnapped_vehicle/output_img/demo.gif' />
+      </p>
+    </th>
+  </tr>
 </table>
 
 
