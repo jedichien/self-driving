@@ -39,11 +39,14 @@ The things the grading code is looking for are:
 2. **Performance**: your particle filter should complete execution within the time of 100 seconds.
 
 ## Concept
-First of all, we have to setup initial information of particles including weight, coordinates. Once we accomplish to initialize, we can start to predict coordinates and weights for paticles. Furthermore, the predicted results are often not accurate, so we have to correct it. Secondly, according to Markov assumption and Naive Bayes equation, we can use the previous to update the prediction. In addition, we have to resample the weights of the particles after updating. Finally, we can repeat these steps to get better predicted result. 
+First of all, we have to setup initial information of particles including weight, coordinates. Once we accomplish to initialize, we can start to predict coordinates and weights for paticles. Furthermore, the predicted results are often not accurate, so we have to correct it. Secondly, according to Markov assumption and Naive Bayes equation, we can use the previous to update the prediction. In addition, we have to resample the weights, resampling wheel, of the particles after updating. Finally, we can repeat these steps to get better predicted result. 
 
 <p align='center'>
 <img src='./output_img/eq_prediction.png' /><br/>
 equation of prediction when rate of yaw is too low
 <p>
 
+## Good Resources
+1. [Kidnapped theory](https://medium.com/intro-to-artificial-intelligence/kidnapped-vehicle-project-using-particle-filters-udacitys-self-driving-car-nanodegree-aa1d37c40d49)
+2. [Localisation theory](https://medium.com/intro-to-artificial-intelligence/localisation-udacitys-self-driving-car-nanodegree-8440a1f83eab)
 
