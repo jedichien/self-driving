@@ -35,7 +35,7 @@ int main()
   PID pid;
   PID pid_t;
   // Initialize the pid variable.
-  pid.Init(0.06, 0.0001, 1.5);
+  pid.Init(0.02, 0.0001, 2.0);
   pid_t.Init(0.03, 0.0001, 1.25);
 
   h.onMessage([&pid, &pid_t](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -73,7 +73,7 @@ int main()
           double throttle;
           pid_t.UpdateError(cte);
           pid_t.Twiddle(cte);
-          throttle = 0.6 - pid_t.TotalError();
+          throttle = 0.5 - pid_t.TotalError();
           // DEBUG
           //std::cout << "CTE: " << cte << " Steering Value: " << steer_value << " Throttle Value: " << throttle << std::endl;
           std::cout << "Kp: " << pid.Kp << " Ki: " << pid.Ki << " Kd: " << pid.Kd << std::endl;

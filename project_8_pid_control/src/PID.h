@@ -22,8 +22,11 @@ public:
    */
   std::vector<double> dp;
   double best_error;
-  unsigned int steps;  
-  unsigned int op;
+  unsigned int steps;
+  // phases of twiddle 
+  enum PHASE {INIT = 0, FIRST = 1, SECOND = 2};
+  // currency 
+  PHASE phase;
   unsigned int param_idx;
   /*
   * Constructor

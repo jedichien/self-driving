@@ -3,7 +3,6 @@
 #include <limits>
 #include <cmath>
 
-#define FACTOR 0.01
 #define EPS 1e-6
 #define MAX_STEPS 2000
 
@@ -25,11 +24,11 @@ void PID::Init(double Kp, double Ki, double Kd) {
   this->i_error = 0.0;
   this->d_error = 0.0;
   
-  this->op = 0;
+  this->phase = this->PHASE::INIT;
   this->param_idx = 0;
   this->steps = 0;
   this->best_error = std::numeric_limits<double>::max();
-  this->dp = {FACTOR*Kp, FACTOR*Ki, FACTOR*Kd};
+  this->dp = {0.01, 0.0001, 0.1};
 }
 
 void PID::UpdateError(double cte) {
@@ -41,39 +40,51 @@ void PID::UpdateError(double cte) {
 double PID::TotalError() {
   return -(Kp*p_error) - (Ki*i_error) - (Kd*d_error);
 }
-
+/**
+ * There are three phases including INIT, FIRST, SECOND within twiddle.
+ * In INIT status, we just init the value to controlling factor.
+ * FIRST, we decide whether should give award or punishment for the factor.
+ * SECOND, we give final chance for the factor to see it gets improved or not. As a result, if the CTE is not improved, and we set it back to the previous, and then decrease the controlling parameter.
+ * 
+ */
 void PID::Twiddle(double cte) {
   double sum = 0.0;
   for(const auto v : dp) {
     sum += v;
   }
-  if(sum < EPS || steps > MAX_STEPS) {
-    steps += 1;
+  if(sum < EPS) {
     return;
   }
-  if(fabs(cte) < best_error) {
-    best_error = fabs(cte);
-    dp[param_idx] *= 1.1;
-    op = 0;
-  }
-  else {
-    switch(op) {
-      case 0:
-        op = 1;
-        break;
-      case 1:
-        TwiddleOp(param_idx, -2*dp[param_idx]);
-        op = 2;
-        break;
-      case 2:
-        TwiddleOp(param_idx, dp[param_idx]);
-        dp[param_idx] *= 0.9;
-        op = 0;
-        break;
+  
+  if(phase == PHASE::INIT) {
+    TwiddleOp(param_idx, dp[param_idx]);
+    phase = PHASE::FIRST;
+  } 
+  else if(phase == PHASE::FIRST) {
+    if(fabs(cte) < best_error) {
+      best_error = fabs(cte);
+      dp[param_idx] *= 1.1;
+      param_idx = (param_idx+1)%3;
+      phase = PHASE::INIT;  
+    }
+    else {
+      TwiddleOp(param_idx, -2*dp[param_idx]);
+      phase = PHASE::SECOND;
     }
   }
-  param_idx = (param_idx+1)%3; 
-  steps += 1; 
+  else { // SECOND
+    if(fabs(cte) < best_error) {
+      best_error = fabs(cte);
+      dp[param_idx] *= 1.1;
+    }
+    else {
+      TwiddleOp(param_idx, dp[param_idx]);
+      dp[param_idx] *= 0.9;
+    }
+    param_idx = (param_idx+1)%3;
+    phase = PHASE::INIT;
+  } 
+  steps += 1;
 }
 
 void PID::TwiddleOp(unsigned int param_idx, double value) {
