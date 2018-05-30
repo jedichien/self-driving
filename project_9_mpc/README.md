@@ -49,6 +49,7 @@ double pred_epsi = epsi + v * (-steer_value/Lf) * dt;
 Unfortunately, our performance of predictions are definitely very poor, so we have correct these by using cost function. That is, the cost function can help us to reward or punish the weights of the polynomial equation we purchase. (Polynomail Equation I believe everyone are quite adept to it.)
 
 I use the C-lib called, CppAD,  to get our ideal equation. This can save us a lot of efforts to solve the optimizing problem.
+Please infer to [MPC.cpp](./src/MPC.cpp)
 ```
 # Our goal: minimize the equation factor to achieve the following conditions.
 # The equation we want to solve:
