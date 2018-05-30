@@ -3,6 +3,84 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Goal
+The project aim to match the trajectory of the vehicle. In the simulator, the green line means your prediction, so your responsibility is to get a perfect polynomial equation for matching the yellow line, the trajectory. Therefore, the more closer you fit the green to the yellow, the more higher accuracy you get.
+
+## Briefly to say
+I will dive into describe each of the functions as best as I can.
+
+#### Part 1
+In [main.cpp](./src/main.cpp) you will get the json data compose to `ptsx, ptsy, x, y, psi, speed, steering_angle, throttle`
+1. ptsx: facing x coordinate of vehicle
+2. ptsy: facing y coordinate of vehicle 
+3. x: x coordinate of vehicle
+4. y: y coordinate of vehicle
+5. psi: angle of tire proportion to the centre
+6. speed: vehicle speed
+7. steering_angle: steering angle 
+8. throttle: vehicle throttle
+
+### Part 2
+Once you get vehicle data, it is time to rock.
+
+---
+
+#### First
+we have to predict the next motion. Let's give our initial equation a shot :D
+```
+for(size_t i = 0; i < ptsx.size(); i++) {
+    double shift_x = ptsx[i] - px;
+    double shift_y = ptsy[i] - py;
+    ptsx[i] = (shift_x*cos(0-psi)-shift_y*sin(0-psi));
+    ptsy[i] = (shift_x*sin(0-psi)+shift_y*cos(0-psi));
+}
+
+pred_x = pred_x + v * cos(0) * dt;
+pred_y = pred_y + v * sin(0) * dt;
+
+double pred_psi = 0 + v * (-steer_value/Lf) * dt;
+double pred_v = v + throttle_value * dt;
+double pred_cte = cte + (v * sin(epsi) * dt);
+double pred_epsi = epsi + v * (-steer_value/Lf) * dt;
+```
+
+#### Second
+
+Unfortunately, our performance of predictions are definitely very poor, so we have correct these by using cost function. That is, the cost function can help us to reward or punish the weights of the polynomial equation we purchase. (Polynomail Equation I believe everyone are quite adept to it.)
+
+I use the C-lib called, CppAD,  to get our ideal equation. This can save us a lot of efforts to solve the optimizing problem.
+```
+# Our goal: minimize the equation factor to achieve the following conditions.
+# The equation we want to solve:
+# Each _FACTOR is based on the empirical.
+
+CTE_FACTOR * (cte - ref_cte)^2 // minimize CTE(Cross-Track-Error) 
++ EPSI_FACTOR * (epsi - ref_epsi)^2 // minimize EPSI
++ (speed - ref_speed)^2 // minimize Speed
++ DELTA_FACTOR * delta^2 // minimize Delta
++ ACCELERATE_FACTOR * accelerate^2 // minimize accelerate
+```
+In the next step, we must to apply some constraints to this equation or let's say contrained values. I use PolyEQ to represent the polynomial equation.
+
+1. Asign all the values to the correspondent variables, such as `x0 = vars['x0']`
+2. Restricted by the simulated environment, we must to contrain the steering angle(degree of -25 to 25) and throttle values(-1 to 1).
+3. Based on the PolyEQ(x0), we can get the estimated angle of the tire. That is the most important part to the adjusting the steer. `psides0 = atan(PolyEQ(x0))`
+4. Once again, we apply the pragmatic situation, such as weighted mean center, to constrain the equation.
+    ```
+    fg[2 + x_start + i] = x1 - (x0 + v0 * CppAD::cos(psi0)*dt);
+    fg[2 + y_start + i] = y1 - (y0 + v0 * CppAD::sin(psi0)*dt);
+    fg[2 + psi_start + i] = psi1 - (psi0 + v0 * delta0 / Lf * dt);
+    fg[2 + v_start + i] = v1 - (v0 + a0 * dt);
+    fg[2 + cte_start + i] = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0)*dt));
+    fg[2 + epsi_start + i] = epsi1 - ((psi0 - psides0) + v0 * delta0 / Lf * dt);
+    ```
+4. When we setup all the regulation and equation, we use `CppAD::ipopt::solve` to get the optimized parameters for the polynomial function. 
+5. Lastly, we apply these optimized parameters to our polynomial function, and then we can get the corrected steering angle and throttle value.
+    ```
+    steer_value = -vars[0]/(deg2rad(25)*Lf); // the optimized value is radians, so we have to normalize it.
+    throttle_value = vars[1];
+    ```
+
 ## Dependencies
 
 * cmake >= 3.5
@@ -45,64 +123,4 @@ is the vehicle starting offset of a straight line (reference). If the MPC implem
 (not too many) it should find and track the reference line.
 2. The `lake_track_waypoints.csv` file has the waypoints of the lake track. You could use this to fit polynomials and points and see of how well your model tracks curve. NOTE: This file might be not completely in sync with the simulator so your solution should NOT depend on it.
 3. For visualization this C++ [matplotlib wrapper](https://github.com/lava/matplotlib-cpp) could be helpful.)
-4.  Tips for setting up your environment are available [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-5. **VM Latency:** Some students have reported differences in behavior using VM's ostensibly a result of latency.  Please let us know if issues arise as a result of a VM environment.
 
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/b1ff3be0-c904-438e-aad3-2b5379f0e0c3/concepts/1a2255a0-e23c-44cf-8d41-39b8a3c8264a)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
