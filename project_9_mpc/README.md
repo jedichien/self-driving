@@ -11,6 +11,7 @@ The project aim to match the trajectory of the vehicle. In the simulator, the gr
 </div>
 
 
+=======
 ## Briefly to say
 I will dive into describe each of the functions as best as I can.
 
@@ -49,12 +50,14 @@ double pred_cte = cte + (v * sin(epsi) * dt);
 double pred_epsi = epsi + v * (-steer_value/Lf) * dt;
 ```
 
+<<<<<<< HEAD
 Here is the useful illustration I infer the below to this [website](http://control.ee.ethz.ch/~racing/research.php)
 
 <div align='center'>
   <img src='./output_img/drift_equation.png' />
 </div>
 
+=======
 #### Second
 
 Unfortunately, our performance of predictions are definitely very poor, so we have correct these by using cost function. That is, the cost function can help us to reward or punish the weights of the polynomial equation we purchase. (Polynomail Equation I believe everyone are quite adept to it.)
