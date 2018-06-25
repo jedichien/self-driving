@@ -14,7 +14,7 @@ public:
 
   std::vector<double> getFrenet(double x, double y, double theta);
   std::vector<double> getXY(double s, double d);
-  std::vecotr<double> getXYspline(double s, double d);
+  std::vector<double> getXYspline(double s, double d);
   double getSpeedToFrenet(double v_xy, double s);
 
   void plot(void);
@@ -38,10 +38,10 @@ private:
 
   std::vector<double> map_s;
 
-  std::vector<double> map_new_waypoints_x;
-  std::vector<double> map_new_waypoints_y;
-  std::vector<double> map_new_waypoints_dx;
-  std::vector<double> map_new_waypoints_dy;
+  std::vector<double> new_map_waypoints_x;
+  std::vector<double> new_map_waypoints_y;
+  std::vector<double> new_map_waypoints_dx;
+  std::vector<double> new_map_waypoints_dy;
 
   std::vector<double> new_map_s;
 
@@ -53,6 +53,6 @@ private:
   int closest_waypoint(double x, double y, const std::vector<double> &maps_x, const std::vector<double> &maps_y);
   int next_waypoint(double x, double y, double theta, const std::vector<double> &maps_x, const std::vector<double> &maps_y);
 
-}
+};
 
 #endif // PATH_PLANNING_MAP
