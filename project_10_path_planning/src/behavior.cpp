@@ -121,9 +121,9 @@ Behavior::Behavior(std::vector<std::vector<double>> const &sensor_fusion, CarDat
   
   // last target candidate while emergency situation occurs
   target.lane = car.lane;
-  target.velocity = predictions.get_lane_speed(car.lane);
+  target.velocity = prediction.get_lane_speed(car.lane);
   target.time = 0.0;
-  target.accelerate = -0.85 * PARAM_MAX_ACCEL;
+  target.accel = -0.85 * PARAM_MAX_ACCEL;
   _targets.push_back(target);
 }
 
