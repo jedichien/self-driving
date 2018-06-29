@@ -21,14 +21,14 @@ struct Target {
 
 class Behavior {
   public:
-    Behavior(std::vector<std::vector<double>> &sensor_fusion, CarData car, Prediction const &prediction);
+    Behavior(std::vector<std::vector<double>> const &sensor_fusion, CarData car, Prediction const &prediction);
     virtual ~Behavior();
     std::vector<Target> get_targets() const {
       return _targets;
     };
   private:
     std::vector<Target> _targets;
-}
+};
 
 
 #endif // PATH_PLANNING_BEHAVIOR

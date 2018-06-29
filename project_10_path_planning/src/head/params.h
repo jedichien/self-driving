@@ -4,13 +4,12 @@
 #include <string>
 #include "utility.h"
 
-const bool PARAM_MAP_BOSCH = true;
+const bool PARAM_MAP_BOSCH = false;
 
 const std::string _map_file = "../data/highway_map.csv";
-//const std::string _map_bosch_file = "../data/highway_map_bosch1_final.csv";
+const std::string _map_bosch_file = "../data/highway_map_bosch1_final.csv";
 
 const double MAXIMUM_S = 6945.554;
-// TODO
 extern double MAX_S;
 
 // Coordinates
