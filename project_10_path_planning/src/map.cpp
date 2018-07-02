@@ -1,14 +1,14 @@
 #include "head/utility.h"
 #include "head/params.h"
 #include "head/map.h"
-#include "head/matplotlibcpp.h"
+//#include "head/matplotlibcpp.h"
 #include <vector>
 #include <iostream>
 #include <sstream>
 #include <cmath>
 #include <time.h>
 
-namespace plt = matplotlibcpp;
+//namespace plt = matplotlibcpp;
 
 double MAX_S;
 
@@ -113,6 +113,7 @@ void Map::read(std::string map_file) {
 }
 
 // plot the diagram
+/*
 void Map::plot(void) {
   plt::title("Map");
   plt::plot(map_waypoints_x, map_waypoints_y, "r*");
@@ -123,6 +124,8 @@ void Map::plot(void) {
   plt::plot(car_x, car_y, "gx");
   plt::show();
 }
+*/
+
 // find the closest way point
 int Map::closest_waypoint(double x, double y, const std::vector<double> &maps_x, const std::vector<double> &maps_y) {
   double closestLen = 100000.0; // just a large number

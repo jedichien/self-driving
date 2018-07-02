@@ -234,3 +234,5 @@ Cost::Cost(TrajectoryXY const &trajectory, Target target, Prediction &prediction
 
  std::cout << "car_lane=" << car_lane << ", target_lane=" << target.lane << ", target_lvel=" << prediction.get_lane_speed(target.lane) << ", cost=" << _cost << std::endl;
 }
+
+Cost::~Cost() {}

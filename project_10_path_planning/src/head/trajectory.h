@@ -50,7 +50,7 @@ TrajectoryJMT JMT_init(double car_s, double car_d);
 class Trajectory {
 public:
   Trajectory(std::vector<Target> targets, Map &map, CarData &car, PreviousPath &previous_path, Prediction &prediction);
-  ~Trajectory() {}
+  virtual ~Trajectory() {}
 
   double getMinCost() { return _min_cost; }
   double getMinCostIndex() { return _min_cost_index; }

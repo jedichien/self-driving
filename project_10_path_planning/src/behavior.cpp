@@ -18,7 +18,7 @@ Behavior::Behavior(std::vector<std::vector<double>> const &sensor_fusion, CarDat
   for (size_t i = 0; i < sensor_fusion.size(); i++) {
     float d = sensor_fusion[i][6];
     // approaching to our car
-    if (d > get_dlef(car.lane) && d < get_dright(car.lane)) {
+    if (d > get_dleft(car.lane) && d < get_dright(car.lane)) {
       // initial
       double vx = sensor_fusion[i][3];
       double vy = sensor_fusion[i][4];
@@ -125,6 +125,10 @@ Behavior::Behavior(std::vector<std::vector<double>> const &sensor_fusion, CarDat
   target.time = 0.0;
   target.accel = -0.85 * PARAM_MAX_ACCEL;
   _targets.push_back(target);
+}
+
+std::vector<Target> Behavior::get_targets() {
+  return _targets;
 }
 
 // destructor

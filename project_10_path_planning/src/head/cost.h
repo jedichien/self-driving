@@ -17,15 +17,15 @@
 class Cost {
 public:
   Cost(struct TrajectoryXY const &trajectory, Target target, Prediction &prediction, int car_lane);
-  virtual ~Cost();
+  ~Cost();
   double get_cost() {
     return _cost;
   }
 private:
   bool check_collision(double x0, double y0, double theta0, double x1, double y1, double theta1);
-  int check_collision_on_trajectory(TrajectoryXY const &trajectory, std::map<int, std::vector<Coord>> &predictions);
+  int check_collision_on_trajectory(struct TrajectoryXY const &trajectory, std::map<int, std::vector<Coord>> &predictions);
   bool check_max_capabilities(std::vector<std::vector<double>> &traj);
-  double get_predicted_dmin(TrajectoryXY const &trajectory, std::map<int, std::vector<Coord>> &predictions);
+  double get_predicted_dmin(struct TrajectoryXY const &trajectory, std::map<int, std::vector<Coord>> &predictions);
   double _cost;
 };
 

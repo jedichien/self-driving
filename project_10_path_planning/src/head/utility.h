@@ -17,7 +17,7 @@ double mph_to_ms(double mph);
 double ms_to_mph(double ms);
 
 // coordinates of "left" lane. 
-double get_dlef(int lane);
+double get_dleft(int lane);
 // coordinates of "right" lane
 double get_dright(int lane);
 // coordinates of "center" lane
