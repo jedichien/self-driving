@@ -49,11 +49,11 @@ def telemetry(sid, data):
     image_array = np.expand_dims(image_array, axis=0)
 
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
-    steering_angle = float(model.predict(image_array, batch_size=1))
-
+    steering_angle, speed = model.predict(image_array, batch_size=1)[0]
+    steering_angle = float(steering_angle)
     # The driving model currently just outputs a constant throttle. Feel free to edit this.
-    throttle = 0.28
-    print(steering_angle, throttle)
+    throttle = float(speed) + 0.2
+    print("angle: {}, throttle: {}".format(steering_angle, throttle))
     send_control(steering_angle, throttle)
 
 
@@ -72,7 +72,7 @@ def send_control(steering_angle, throttle):
 
 if __name__ == '__main__':
     # load model weights
-    weights_path = 'weights/w.11-0.29734.hd5'
+    weights_path = 'weights/model_ep386.pkl'
     print('Loading weights: {}'.format(weights_path))
     model.load_weights(weights_path)
 

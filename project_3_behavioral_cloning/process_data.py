@@ -89,7 +89,7 @@ def pd2np(ddf):
         labels.append([float(df['steer']),
                     df['throttle'],
                     df['brake'],
-                    df['speed']])
+                    float(df['speed'])])
     imgs = np.array(imgs)
     labels = np.array(labels, dtype=np.float32)
     
@@ -165,15 +165,25 @@ Args:
 Return:
   np.array
 """
-def augmentShift(frame, cam_shift):
+def augmentShift(frame, cam_shift, verbose=False, save=False):
     rows, cols, _ = frame.shape
-    p = -cam_shift * 72
-    pts1 = np.float32([[.0, .0], [300., .0], [.0, 100.]])
-    pts2 = np.float32([[.0, .0], [300., .0], [p, .0]])
+    shifted_point = [cols / 2 + cam_shift, rows / 2]
+    pts1 = np.float32([[0, rows], [cols, rows], [cols / 2, rows / 2]])
+    pts2 = np.float32([[0, rows], [cols, rows], shifted_point])
     M = cv2.getAffineTransform(pts1, pts2)
     _frame = np.copy(frame)
-    _frame[60:, :, :] = cv2.warpAffine(_frame[60:, :], M, (cols, rows-60))
-
+    _frame = cv2.warpAffine(_frame, M, (cols, rows), borderMode=cv2.BORDER_REPLICATE)
+    if verbose:
+        fig, ax = plt.subplots(1, 2, figsize=(10, 10))
+        ax[0].set_title('Origin')
+        ax[0].imshow(np.uint8(frame))
+        ax[1].set_title('Shifted')
+        ax[1].imshow(np.uint8(_frame))
+        if save:
+            if not os.path.exists('output'):
+                os.makedirs('output')
+            plt.savefig(os.path.join('output', 'shift.jpg'))
+        plt.show()
     return _frame
 """
 Rotate frame
@@ -184,22 +194,57 @@ Args:
 Args:
   np.array
 """
-def augmentRotate(frame, cam_degree):
-    p = -int(cam_degree*2)
-    _frame = np.zeros(frame.shape, dtype=frame.dtype)
-    
-    if p == 0:
-        return frame
-    elif p > 0:
-        _frame[:, p:, :] = frame[:, :-p, :]
-    else:
-        _frame[:, :p, :] = frame[:, -p:, :]
-
+def augmentRotate(frame, cam_degree, verbose=False, save=False):
+    rows, cols, _ = frame.shape
+    M = cv2.getRotationMatrix2D((cols/2, rows/2), cam_degree, 1.0)
+    _frame = cv2.warpAffine(frame, M, (cols, rows), borderMode=cv2.BORDER_REPLICATE)
+    if verbose:
+        fig, ax = plt.subplots(1, 2, figsize=(10, 10))
+        ax[0].set_title('Origin')
+        ax[0].imshow(np.uint8(frame))
+        ax[1].set_title('Rotated')
+        ax[1].imshow(np.uint8(_frame))
+        if save:
+            if not os.path.exists('output'):
+                os.makedirs('output')
+            plt.savefig(os.path.join('output', 'rotated.jpg'))
+        plt.show()
     return _frame
 
+def augmentBrightness(frame, jiter_mask, verbose=False, save=False):
+    _frame = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
+    _frame[:, :, 2] *= jiter_mask
+    _frame[:, :, 2] = np.clip(_frame[:, :, 2], a_min=0, a_max=255)
+    _frame = cv2.cvtColor(_frame, cv2.COLOR_HSV2RGB)
+    if verbose:
+        fig, ax = plt.subplots(1, 2, figsize=(10, 10))
+        ax[0].set_title('Origin')
+        ax[0].imshow(np.uint8(frame))
+        ax[1].set_title('Brightness')
+        ax[1].imshow(np.uint8(_frame))
+        if save:
+            if not os.path.exists('output'):
+                os.makedirs('output')
+            plt.savefig(os.path.join('output', 'brightness.jpg'))
+        plt.show()
+    return _frame
+
+def augmentHorizontalFlipped(frame, verbose=False, save=False):
+    _frame = frame[:, ::-1, :]
+    if verbose:
+        fig, ax = plt.subplots(1, 2, figsize=(10, 10))
+        ax[0].set_title('Origin')
+        ax[0].imshow(np.uint8(frame))
+        ax[1].set_title('Flipped')
+        ax[1].imshow(np.uint8(_frame))
+        if save:
+            if not os.path.exists('output'):
+                os.makedirs('output')
+            plt.savefig(os.path.join('output', 'flipped.jpg'))
+        plt.show()
+    return _frame
 """
 Generate a batch of data.
-
 Args:
   data: data for generating
   batch_size: size of batching
@@ -215,7 +260,7 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
         n_current = 0
         X = np.zeros(shape=(batch_size, h, w, c), dtype=np.float32)
         y_steer = np.zeros(shape=(batch_size,), dtype=np.float32)
-        
+        y_speed = np.zeros(shape=(batch_size,), dtype=np.float32)
         for idx in range(labels.shape[0]):
             img = np.copy(imgs[idx])
             label = np.copy(labels[idx])
@@ -228,35 +273,29 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
                 steer = label[0] + config['delta_correction']
             else:
                 steer = label[0] - config['delta_correction']
-           
-            # camera shifting or rotating
-            if needAugmented(augmented):
+            # max speed 
+            speed = np.clip(((label[-1] - config['max_speed']/2)/config['max_speed']/2)-1, a_min=-1.0, a_max=1.0)
+            
+            if augmented:
+                # camera shifting or rotating
                 if needAugmented(augmented):
-                    cam_shift = np.random.uniform(-1, 1)
+                    cam_shift = np.random.uniform(-100, 100)
                     frame = augmentShift(frame, cam_shift)
-                    steer = steer - cam_shift * 0.2 / 0.9
+                    steer = steer + (cam_shift/(frame.shape[0]/2) * 180/(np.pi*25.0)/6.0)
                 else:
                     cam_degree = np.random.uniform(-10, 10)
                     frame = augmentRotate(frame, cam_degree)
-                    steer = steer - 0.5 * cam_degree / 25.
-
-            # camera flipped or colour space changed.
-            if augmented:
+                    steer = steer - np.sin(cam_degree*np.pi/180)
                 # horizontal flipping
                 if random.choice([True, False]):
-                    frame = frame[:, ::-1, :]
+                    frame = augmentHorizontalFlipped(frame)
                     steer *= -1.
-                
                 # perturb slightly steering angle
                 steer += np.random.normal(loc=0, scale=config['augmentation_steer_sigma'])
-                
                 # if colorful image randomly change brightness
                 if config['input_channels'] == 3:
-                    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
-                    frame[:, :, 2] *= random.uniform(config['augmentation_value_min'], config['augmentation_value_max'])
-                    frame[:, :, 2] = np.clip(frame[:, :, 2], a_min=0, a_max=255)
-                    frame = cv2.cvtColor(frame, cv2.COLOR_HSV2RGB)
-                
+                    jiter_mask = random.uniform(config['augmentation_value_min'], config['augmentation_value_max'])
+                    frame = augmentBrightness(frame, jiter_mask, verbose=False, save=False)
             # whether steer angle matchs the condition
             steer_magnitude_thresh = np.random.rand()
             if ((abs(steer) + bias) < steer_magnitude_thresh) or (steer < -1. and steer > 1.):
@@ -264,9 +303,8 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
             else:
                 X[n_current] = frame
                 y_steer[n_current] = steer
+                y_speed[n_current] = speed 
                 n_current += 1
             if n_current == batch_size:     
                 break
-        yield X, y_steer
-        
-        
+        yield X, zip(y_steer,y_speed)

@@ -16,7 +16,7 @@ def train_process(train, test, epochs=1, steps_per_epoch=100, validation_steps=1
     
     if not os.path.exists('weights'):
         os.makedirs('weights')
-    checkpoint_callback = ModelCheckpoint(os.path.join('weights', 'w.{epoch:02d}-{val_loss:.5f}.hd5'))
+    checkpoint_callback = ModelCheckpoint(os.path.join('weights', 'ep.{epoch:02d}-{val_loss:.5f}.pkl'))
     logger = CSVLogger(filename='history.csv')
     g_train = generate_batch(train, batch_size=config['batch_size'], bias=config['bias'])
     g_test = generate_batch(test, batch_size=config['batch_size'], bias=1.0, augmented=False)
