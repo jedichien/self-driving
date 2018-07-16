@@ -72,7 +72,7 @@ def send_control(steering_angle, throttle):
 
 if __name__ == '__main__':
     # load model weights
-    weights_path = 'weights/model_ep386.pkl'
+    weights_path = 'weights/model.pkl'
     print('Loading weights: {}'.format(weights_path))
     model.load_weights(weights_path)
 
