@@ -5,7 +5,7 @@ config = {
     'input_height': h,
     'input_channels': c,
     'batch_size': 256,
-    'delta_correction': 0.1,
+    'delta_correction': 0.18,
     'crop_height': range(20, 140),
     'augmentation_steer_sigma': 0.2,
     'augmentation_value_min': 0.2,
