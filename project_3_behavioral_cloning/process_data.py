@@ -285,13 +285,13 @@ def generate_batch(data, batch_size=128, augmented=True, bias=0.5):
                 else:
                     cam_degree = np.random.uniform(-10, 10)
                     frame = augmentRotate(frame, cam_degree)
-                    steer = steer - np.sin(cam_degree*np.pi/180)
+                    steer = steer + np.sin(cam_degree*np.pi/180)
                 # horizontal flipping
                 if random.choice([True, False]):
                     frame = augmentHorizontalFlipped(frame)
                     steer *= -1.
                 # perturb slightly steering angle
-                steer += np.random.normal(loc=0, scale=config['augmentation_steer_sigma'])
+                #steer += np.random.normal(loc=0, scale=config['augmentation_steer_sigma'])
                 # if colorful image randomly change brightness
                 if config['input_channels'] == 3:
                     jiter_mask = random.uniform(config['augmentation_value_min'], config['augmentation_value_max'])
